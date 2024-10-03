@@ -1,0 +1,45 @@
+additionalLabels: {}
+affinity: {}
+annotations: {}
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+mode: daemonset
+
+config:
+  exporters:
+    datadog:
+      api:
+        key: ""
+  processors:
+    batch:
+      timeout: 10s
+  receivers:
+    otlp:
+      protocols:
+        grpc: {}
+        http: {}
+  service:
+    pipelines:
+      metrics:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [datadog]
+      traces:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [datadog]
+      logs:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [datadog]
+
+image:
+  repository: otel/opentelemetry-collector
+  tag: "latest"
+
+service:
+  type: ClusterIP

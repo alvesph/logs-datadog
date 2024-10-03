@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-logger-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-logger-2
+  template:
+    metadata:
+      labels:
+        app: http-logger-2
+    spec:
+      containers:
+      - name: http-logger-2
+        image: recrutaz/http-logger-2:v1
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PORT
+          value: "8081"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-logger-2-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8081
+  selector:
+    app: http-logger-2
